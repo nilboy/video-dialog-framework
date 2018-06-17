@@ -1,0 +1,78 @@
+process_name: mat
+style: MC
+train_data_loader:
+  batch_size: 30
+  video_frames: 80
+  max_qa_len: 20
+  #100523
+  num_records: 100305
+  candidate_num: 50
+  is_shuffle: True
+  port: 1120
+  mode: train
+val_data_loader:
+  batch_size: 10
+  video_frames: 80
+  max_qa_len: 20
+  #5585
+  num_records: 5411
+  candidate_num: 50
+  is_shuffle: False
+  port: 1120
+  mode: val
+test_data_loader:
+  batch_size: 10
+  video_frames: 80
+  max_qa_len: 20
+  #5585
+  num_records:  5976
+  candidate_num: 50
+  is_shuffle: False
+  port: 1120
+  mode: test
+net:
+  phase: train
+  vgg_feature_num: 4096
+  c3d_feature_num: 4096
+  candidate_num: 50
+  embedding_file: data/tacos/word_embedding.pkl
+  vocab_file: data/tacos/voc.txt
+  encoder_params:
+    class: mvd.encoder.MATEncoder
+    params:
+      name: Multi-Attention Encoder
+      video: True
+      vgg: True
+      c3d: True
+      history: True
+      encode_out_dim: 512
+      attention_params:
+        class: tf.contrib.seq2seq.BahdanauAttention
+        num_units: 256
+      cell_params:
+        cell: tf.contrib.rnn.BasicLSTMCell
+        num_units: 256
+        layer_num: 2
+        stack_type: bidirection
+        dropout_keep_rate: 0.8
+  decoder_params:
+    class: mvd.decoder.DDecoder
+    params:
+      name: DDecoder
+      cell: tf.contrib.rnn.BasicLSTMCell
+      num_units: 256
+      layer_num: 2
+      #stack, bidirection
+      stack_type: bidirection
+      dropout_keep_rate: 0.8
+train_params:
+  seed: 1234
+  reload: False
+  epoch_num: 100
+  init_lr:   0.001
+  max_grad_norm: 1.0
+  train_dir: models/mat/
+  lr_decay_step: 6000
+  lr_decay_rate: 0.8
+eval_params:
+  model_dir: models/mat/

@@ -1,0 +1,8 @@
+*.pyc
+data/*.pyc
+encoder/*.pyc
+decoder/*.pyc
+net/*.pyc
+solver/*.pyc
+ops/*.pyc
+utils/*.pyc
